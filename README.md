@@ -1,5 +1,5 @@
 # Owe
-Small application for your directories to be **o**rganized **w**ith **e**ase
+Small application (with GUI) for your directories to be **o**rganized **w**ith **e**ase
 
 The programm basically searches through your selected directory and looks for subdirectories containing any kind of files and creating thus a list of those. Directories can be opened as usual by a double-click or by selecting and pressing ENTER. 
 
