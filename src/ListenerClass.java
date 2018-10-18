@@ -258,7 +258,7 @@ public class ListenerClass {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			SearchDialog dialog = new SearchDialog(frame);
+			SearchDialog dialog = new SearchDialog((MainFrame) frame);
 		}
 		
 	}
@@ -518,7 +518,10 @@ public class ListenerClass {
 			int amountOfClicks = e.getClickCount();
 			if (amountOfClicks >= 2) {
 				JList list = (JList) e.getComponent();
-				DeleteDirectoryDialog dialog = new DeleteDirectoryDialog(frame, list.getSelectedIndex());
+				if (list.getSelectedIndex() != -1) {
+					RemoveDirectoryDialog dialog = new RemoveDirectoryDialog(frame, list.getSelectedIndex());
+				}
+				
 			}
 		}
 
@@ -645,25 +648,31 @@ public class ListenerClass {
 	
 	
 	
-	public class ExploreMultipleItemListener implements KeyListener{
+	public class ListItemKeyListener implements KeyListener{
 		
 		private boolean isMain;
 		private ArrayList<Integer> adapterList;
+		private MainFrame frame;
+		private UpdateDialog dialog;
 		
-		public ExploreMultipleItemListener() {
+		public ListItemKeyListener(MainFrame frame) {
 			isMain = true;
 			adapterList = null;
+			dialog = null;
+			this.frame = frame;
 		}
 		
-		public ExploreMultipleItemListener(ArrayList<Integer> list) {
+		public ListItemKeyListener(UpdateDialog dialog, ArrayList<Integer> list) {
 			isMain = false;
 			adapterList = list;
+			frame = null;
+			this.dialog = dialog;
 		}
 
 		@Override
 		public void keyPressed(KeyEvent e) {
 			
-			if (e.getKeyChar() == '\n') {
+			if (e.getKeyChar() == '\n') {  // Multi-Explore-Funktion
 				JList list = (JList) e.getComponent();
 				int[] indeces = list.getSelectedIndices();
 				for (int i = 0; i < indeces.length; i++) {
@@ -679,6 +688,25 @@ public class ListenerClass {
 					} catch (IOException e1) {
 						LoggingClass.makeWarningLog(e1.getMessage());
 					}
+				}
+			}
+			else if (e.getKeyCode() == KeyEvent.VK_DELETE) {  // Löschfunktion
+				JList list = (JList) e.getComponent();
+				int[] indeces = list.getSelectedIndices();
+				if (indeces.length == 0) {
+					return;
+				}
+				if (isMain) {
+					DeleteSubDirectoryDialog deleteDialog = new DeleteSubDirectoryDialog(frame, null, indeces);
+				}
+				else {
+					int[] newList = new int[indeces.length];
+					for (int i = 0; i < newList.length; i++) {
+						newList[i] = adapterList.get(indeces[i]);
+					}
+					
+					
+					DeleteSubDirectoryDialog deleteDialog = new DeleteSubDirectoryDialog(null, dialog, newList);
 				}
 			}
 		}
@@ -699,13 +727,56 @@ public class ListenerClass {
 		
 	}
 	
-	public static ExploreMultipleItemListener makeExploreMultipleItemListener() {
+	public static ListItemKeyListener makeListItemKeyListener(MainFrame frame) {
 		ListenerClass container = new ListenerClass();
-		return container. new ExploreMultipleItemListener();
+		return container. new ListItemKeyListener(frame);
 	}
 	
-	public static ExploreMultipleItemListener makeExploreMultipleItemListener(ArrayList<Integer> adapterList) {
+	public static ListItemKeyListener makeListItemKeyListener(UpdateDialog dialog, ArrayList<Integer> adapterList) {
 		ListenerClass container = new ListenerClass();
-		return container. new ExploreMultipleItemListener(adapterList);
+		return container. new ListItemKeyListener(dialog, adapterList);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	private static class DeleteDirectoryFromSystemListener implements ActionListener{
+		
+		private JList list;
+		private MainFrame frame;
+		
+		
+		public DeleteDirectoryFromSystemListener(MainFrame frame, JList list) {
+			this.list = list;
+			this.frame = frame;
+			
+		}
+		
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			int[] indeces = list.getSelectedIndices();
+			if (indeces.length == 0) {
+				return;
+			}
+			DeleteSubDirectoryDialog dialog = new DeleteSubDirectoryDialog(frame, null, indeces);
+		}
+
+		
+		
+		
+	}
+	
+	public static DeleteDirectoryFromSystemListener makeDeleteDirectoryFromSystemListener(MainFrame frame, JList list) {
+		return new DeleteDirectoryFromSystemListener(frame, list);
 	}
 }

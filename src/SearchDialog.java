@@ -15,23 +15,26 @@ import javax.swing.JToolBar;
 
 
 // Dialog-Fenster mit dem Suchfeld und -liste
-public class SearchDialog extends JDialog{
+public class SearchDialog extends JDialog implements UpdateDialog{
 
 	private JList list = new JList(new DefaultListModel());
 	private JTextField field;
 	private ArrayList<Integer> adapterList;
 	private ListenerClass.ExploreItemListener listener;
-	private ListenerClass.ExploreMultipleItemListener listener2;
+	private ListenerClass.ListItemKeyListener listener2;
 	
-	public SearchDialog(JFrame frame) {
+	private MainFrame frame;
+	
+	public SearchDialog(MainFrame frame) {
 		super(frame);
+		this.frame = frame;
 		this.setSize(600, 800);
 		this.setLayout(new BorderLayout());
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
 		
 		listener = ListenerClass.makeExploreItemListener(adapterList);
-		listener2 = ListenerClass.makeExploreMultipleItemListener(adapterList);
+		listener2 = ListenerClass.makeListItemKeyListener(this, adapterList);
 		list.addMouseListener(listener);
 		list.addKeyListener(listener2);
 		//adapterList = new ArrayList<Integer>();
@@ -55,6 +58,7 @@ public class SearchDialog extends JDialog{
 	}
 	
 	public void updateList() {
+		frame.refreshFrame();
 		String search = field.getText();
 		adapterList = ProjectHolder.getListHolder().searchItem(search);
 		DefaultListModel<String> model = new DefaultListModel();

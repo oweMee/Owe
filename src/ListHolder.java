@@ -14,7 +14,9 @@ public class ListHolder implements Serializable {
 	
 	private static final long serialVersionUID = 9073858431619904619L;  // von Eclipse generiert
 	
-	private double versionNumber = 0.1;
+	private byte versionNumber = 0;
+	private byte subVersionNumber = 2;
+	private byte patchVersionNumber = 0;
 	
 	private int settingFlags;
 	
@@ -23,6 +25,14 @@ public class ListHolder implements Serializable {
 
 	private ArrayList<ListItem> listItemList = new ArrayList<>();
 	private ArrayList<SuperDirectoryItem> superDirectoryItemList = new ArrayList<>();
+	
+	public int getVersionNumber() {  // ???? vllt ändern
+		int result = 0;
+		result = (result << 8) | (int) versionNumber;
+		result = (result << 8) | (int) subVersionNumber;
+		result = (result << 8) | (int) patchVersionNumber;
+		return result;
+	}
 	
 	public void addListItem(ListItem item) {
 		listItemList.add(item);
@@ -311,5 +321,30 @@ public class ListHolder implements Serializable {
 	
 	public int getSuperDirectoryListSize() {
 		return superDirectoryItemList.size();
+	}
+	
+	private static void deleteSubFile(File file) {
+		if (file.isDirectory()) {
+			File[] subFiles = file.listFiles();
+			for (int i = 0; i < subFiles.length; i++) {
+				deleteSubFile(subFiles[i]);
+			}
+			if (file.exists()) {
+				file.delete();
+			}
+		}
+		else {
+			if (file.exists()) {
+				file.delete();
+			}
+		}
+	}
+	
+	public void deleteSubDirectoryByPosition(int position) {
+		String path = listItemList.get(position).getPath();
+		File file = new File(path);
+		deleteSubFile(file);
+		
+		listItemList.remove(position);
 	}
 }

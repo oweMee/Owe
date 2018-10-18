@@ -29,7 +29,11 @@ public class ProjectHolder {
 			listHolder.setLoadingPath(path);
 		}
 		try {
-			ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(listHolder.getLoadingPath() + ".owe"));  // ??? hoffentlich funktioniert die Endung ".owe"
+			String path = listHolder.getLoadingPath();
+			if (!(path.endsWith(".owe"))) {
+				path += ".owe";
+			}
+			ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(path));  // ??? hoffentlich funktioniert die Endung ".owe"
 			objectOutputStream.writeObject(listHolder);
 		} catch (FileNotFoundException e) {
 			LoggingClass.makeWarningLog(e.getMessage());

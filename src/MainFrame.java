@@ -42,7 +42,7 @@ public class MainFrame extends JFrame{
 		
 		ListenerClass.ExploreItemListener listItemListListener = ListenerClass.makeExploreItemListener();
 		listItemList.addMouseListener(listItemListListener);
-		listItemList.addKeyListener(ListenerClass.makeExploreMultipleItemListener());
+		listItemList.addKeyListener(ListenerClass.makeListItemKeyListener(this));
 		
 		superDirectoryList.addMouseListener(ListenerClass.makeShowDeleteSuperDirectoryDialogListener(this));
 		
@@ -140,6 +140,10 @@ public class MainFrame extends JFrame{
 		JButton findSimilarButton = new JButton("Find Similars");
 		findSimilarButton.addActionListener(ListenerClass.makeShowFindSimilarListener(this));
 		toolBar.add(findSimilarButton);
+		
+		JButton deleteSubDirectoryButton = new JButton("Delete Subdirectory");
+		deleteSubDirectoryButton.addActionListener(ListenerClass.makeDeleteDirectoryFromSystemListener(this, listItemList));
+		toolBar.add(deleteSubDirectoryButton);
 		
 		return toolBar;
 	}

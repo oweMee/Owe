@@ -13,12 +13,12 @@ import javax.swing.JToolBar;
 
 
 // Dialog Fenster für Find Similar
-public class FindSimilarDialog extends JDialog {
+public class FindSimilarDialog extends JDialog implements UpdateDialog{
 	
 	private JList list = new JList(new DefaultListModel<String>());
 	ArrayList<Integer> adapterList;
 	ListenerClass.ExploreItemListener listener;
-	ListenerClass.ExploreMultipleItemListener listener2;
+	ListenerClass.ListItemKeyListener listener2;
 
 	public FindSimilarDialog(MainFrame frame) {
 		super(frame);
@@ -28,7 +28,7 @@ public class FindSimilarDialog extends JDialog {
 		this.setResizable(false);
 		
 		listener = ListenerClass.makeExploreItemListener(adapterList);
-		listener2 = ListenerClass.makeExploreMultipleItemListener(adapterList);
+		listener2 = ListenerClass.makeListItemKeyListener(this, adapterList);
 		list.addMouseListener(listener);
 		list.addKeyListener(listener2);
 		//adapterList = new ArrayList<Integer>();
